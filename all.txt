@@ -1,0 +1,166 @@
+### Zawartość pliku: Form1.Designer.cs ###
+﻿
+namespace MyWinFormsApp
+{
+    partial class Form1
+    {
+        private System.ComponentModel.IContainer components = null;
+
+        // Clean up any resources being used.
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Text = "Form1";
+
+            // Tworzymy przycisk
+            Button button1 = new Button();
+            button1.Size = new System.Drawing.Size(200, 50);
+            button1.Location = new System.Drawing.Point(300, 150);
+            button1.Text = "Kliknij mnie";
+            button1.Click += Button1_Click;
+
+            // Dodajemy przycisk do formularza
+            this.Controls.Add(button1);
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
+
+
+### Zawartość pliku: Form1.cs ###
+using System;
+using System.IO;
+using System.Reflection;
+using System.Windows.Forms;
+
+namespace MyWinFormsApp
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+            SetBackgroundImage();
+        }
+
+        private void SetBackgroundImage()
+        {
+            // Ładowanie obrazu z zasobów
+            var assembly = Assembly.GetExecutingAssembly();
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            using (Stream stream = assembly.GetManifestResourceStream("MyWinFormsApp.background.jpg"))
+            {
+                if (stream != null)
+                {
+                    this.BackgroundImage = Image.FromStream(stream);
+                    this.BackgroundImageLayout = ImageLayout.Stretch;
+                }
+                else
+                {
+                    MessageBox.Show("Obrazek nie został znaleziony.");
+                }
+            }
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+        }
+    }
+}
+
+
+### Zawartość pliku: MyWinFormsApp.csproj ###
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="background.jpg" />
+  </ItemGroup>
+
+</Project>
+
+
+
+
+### Zawartość pliku: Program.cs ###
+namespace MyWinFormsApp
+{
+    static class Program
+    {
+        /// <summary>
+        ///  The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
+        {
+            // To customize application configuration such as set high DPI settings or default font,
+            // see https://aka.ms/applicationconfiguration.
+            ApplicationConfiguration.Initialize();
+            Application.Run(new Form1());
+        }
+    }
+}
+
+
+### Zawartość pliku: all.txt ###
+
+
+### Zawartość pliku: MyWinFormsApp.sln ###
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyWinFormsApp", "MyWinFormsApp.csproj", "{4BABA20F-E026-46EC-AC93-B3B808721FA8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4BABA20F-E026-46EC-AC93-B3B808721FA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BABA20F-E026-46EC-AC93-B3B808721FA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BABA20F-E026-46EC-AC93-B3B808721FA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BABA20F-E026-46EC-AC93-B3B808721FA8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FAED096B-3180-4907-8A0B-B67BC515DD0A}
+	EndGlobalSection
+EndGlobal
+
+
+### Zawartość pliku: MyWinFormsApp.csproj.user ###
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <ItemGroup>
+        <Compile Update="Form1.cs">
+            <SubType>Form</SubType>
+        </Compile>
+    </ItemGroup>
+</Project>
+
+
+### Zawartość pliku: background.jpg ###

@@ -1,0 +1,14 @@
+c:\Users\jagod\Downloads\projektlauncher\instalator\MyWinFormsApp\obj\Debug\net9.0-windows\MyWinFormsApp.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\jagod\Downloads\projektlauncher\instalator\MyWinFormsApp\obj\Debug\net9.0-windows\MyWinFormsApp.AssemblyInfoInputs.cache
+c:\Users\jagod\Downloads\projektlauncher\instalator\MyWinFormsApp\obj\Debug\net9.0-windows\MyWinFormsApp.AssemblyInfo.cs
+c:\Users\jagod\Downloads\projektlauncher\instalator\MyWinFormsApp\obj\Debug\net9.0-windows\MyWinFormsApp.csproj.CoreCompileInputs.cache
+c:\Users\jagod\Downloads\projektlauncher\instalator\MyWinFormsApp\bin\Debug\net9.0-windows\MyWinFormsApp.exe
+c:\Users\jagod\Downloads\projektlauncher\instalator\MyWinFormsApp\bin\Debug\net9.0-windows\MyWinFormsApp.deps.json
+c:\Users\jagod\Downloads\projektlauncher\instalator\MyWinFormsApp\bin\Debug\net9.0-windows\MyWinFormsApp.runtimeconfig.json
+c:\Users\jagod\Downloads\projektlauncher\instalator\MyWinFormsApp\bin\Debug\net9.0-windows\MyWinFormsApp.dll
+c:\Users\jagod\Downloads\projektlauncher\instalator\MyWinFormsApp\bin\Debug\net9.0-windows\MyWinFormsApp.pdb
+c:\Users\jagod\Downloads\projektlauncher\instalator\MyWinFormsApp\obj\Debug\net9.0-windows\MyWinFormsApp.dll
+c:\Users\jagod\Downloads\projektlauncher\instalator\MyWinFormsApp\obj\Debug\net9.0-windows\refint\MyWinFormsApp.dll
+c:\Users\jagod\Downloads\projektlauncher\instalator\MyWinFormsApp\obj\Debug\net9.0-windows\MyWinFormsApp.pdb
+c:\Users\jagod\Downloads\projektlauncher\instalator\MyWinFormsApp\obj\Debug\net9.0-windows\MyWinFormsApp.genruntimeconfig.cache
+c:\Users\jagod\Downloads\projektlauncher\instalator\MyWinFormsApp\obj\Debug\net9.0-windows\ref\MyWinFormsApp.dll
