@@ -1,12 +1,203 @@
-### Zawartość pliku: Form1.Designer.cs ###
-﻿
+### Zawartość pliku: Form1.cs ###
+using System;
+using System.IO;
+using System.Net;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Drawing;
+using System.Diagnostics;
+
 namespace MyWinFormsApp
+{
+    public partial class Form1 : Form
+    {
+        private string downloadUrl = "https://example.com/sample.7z";
+        private string downloadFilePath = Path.Combine(Application.StartupPath, "GTA_San_Andreas.7z");
+        private string extractFolderPath = Path.Combine(Application.StartupPath, "GTA_San_Andreas");
+        private string sevenZipPath = Path.Combine(Application.StartupPath, "7zip");
+        private string sevenZipExe = Path.Combine(Application.StartupPath, "7zip", "7z.exe");
+        private string sevenZipDownloadUrl = "https://www.7-zip.org/a/7z2301-x64.exe"; // Oficjalny instalator 7-Zip
+
+        private ProgressBar progressBar;
+        private Label lblStatus;
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+        public Form1()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+        {
+            InitializeComponent();
+            SetBackgroundImage();
+
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8601 // Possible null reference assignment.
+            progressBar = (ProgressBar)Controls["progressBar"];
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8601 // Possible null reference assignment.
+            lblStatus = (Label)Controls["lblStatus"];
+#pragma warning restore CS8601 // Possible null reference assignment.
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+        }
+
+        private void SetBackgroundImage()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            using (Stream stream = assembly.GetManifestResourceStream("MyWinFormsApp.background.jpg"))
+            {
+                if (stream != null)
+                {
+                    BackgroundImage = Image.FromStream(stream);
+                    BackgroundImageLayout = ImageLayout.Stretch;
+                }
+                else
+                {
+                    MessageBox.Show("Obrazek tła nie został znaleziony.");
+                }
+            }
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+        }
+
+        private async void BtnDownload_Click(object sender, EventArgs e)
+        {
+            lblStatus.Text = "Status: Sprawdzanie obecności 7-Zip...";
+            if (!File.Exists(sevenZipExe))
+            {
+                lblStatus.Text = "Status: Pobieranie i instalacja 7-Zip...";
+                await DownloadAndInstall7Zip();
+            }
+
+            lblStatus.Text = "Status: Sprawdzanie pliku do pobrania...";
+            if (File.Exists(downloadFilePath))
+            {
+                lblStatus.Text = "Status: Plik już istnieje. Rozpakowywanie...";
+                await ExtractFileAsync();
+            }
+            else
+            {
+                lblStatus.Text = "Status: Pobieranie...";
+                try
+                {
+                    await DownloadFileAsync(downloadUrl, downloadFilePath);
+                    lblStatus.Text = "Status: Pobieranie zakończone. Rozpakowywanie...";
+                    await ExtractFileAsync();
+                    lblStatus.Text = "Status: Zakończono!";
+                    MessageBox.Show("Plik został pobrany i rozpakowany pomyślnie!", "Sukces", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    lblStatus.Text = "Status: Błąd!";
+                    MessageBox.Show($"Wystąpił błąd: {ex.Message}", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    progressBar.Value = 0;
+                }
+            }
+        }
+
+private async Task DownloadAndInstall7Zip()
+{
+    string installerPath = Path.Combine(Application.StartupPath, "7zip_installer.exe");
+    try
+    {
+#pragma warning disable SYSLIB0014
+        using (WebClient client = new())
+        {
+            client.DownloadProgressChanged += (s, e) =>
+            {
+                progressBar.Value = e.ProgressPercentage;
+            };
+
+            await client.DownloadFileTaskAsync(new Uri(sevenZipDownloadUrl), installerPath);
+        }
+#pragma warning restore SYSLIB0014
+
+        // Uruchamianie instalatora z uprawnieniami administratora
+        ProcessStartInfo processInfo = new ProcessStartInfo
+        {
+            FileName = installerPath,
+            Arguments = $"/S /D={sevenZipPath}",
+            UseShellExecute = true, // Wymagane dla podniesionych uprawnień
+            Verb = "runas", // Wymusza uruchomienie jako Administrator
+            CreateNoWindow = true
+        };
+
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+                Process process = Process.Start(processInfo);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+                process.WaitForExit();
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+
+                if (!File.Exists(sevenZipExe))
+        {
+            throw new Exception("Nie udało się zainstalować 7-Zip. Sprawdź uprawnienia administracyjne.");
+        }
+
+        // Dodanie 7-Zip do PATH tymczasowo
+        Environment.SetEnvironmentVariable("PATH", $"{sevenZipPath};{Environment.GetEnvironmentVariable("PATH")}");
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show($"Błąd podczas instalacji 7-Zip: {ex.Message}", "Błąd", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+    finally
+    {
+        if (File.Exists(installerPath))
+            File.Delete(installerPath);
+    }
+}
+
+
+        private async Task DownloadFileAsync(string url, string destination)
+        {
+#pragma warning disable SYSLIB0014
+            using (WebClient client = new())
+            {
+                client.DownloadProgressChanged += (s, e) =>
+                {
+                    progressBar.Value = e.ProgressPercentage;
+                };
+
+                await client.DownloadFileTaskAsync(new Uri(url), destination);
+            }
+#pragma warning restore SYSLIB0014
+        }
+
+        private async Task ExtractFileAsync()
+        {
+            await Task.Run(() =>
+            {
+                if (!Directory.Exists(extractFolderPath))
+                {
+                    Directory.CreateDirectory(extractFolderPath);
+                }
+
+                Process process = new Process();
+                process.StartInfo.FileName = sevenZipExe;
+                process.StartInfo.Arguments = $"x \"{downloadFilePath}\" -o\"{extractFolderPath}\" -y";
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.CreateNoWindow = true;
+
+                process.Start();
+                process.WaitForExit();
+            });
+        }
+    }
+}
+
+
+### Zawartość pliku: Form1.Designer.cs ###
+﻿namespace MyWinFormsApp
 {
     partial class Form1
     {
         private System.ComponentModel.IContainer components = null;
 
-        // Clean up any resources being used.
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -21,61 +212,33 @@ namespace MyWinFormsApp
             this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "Form1";
+            this.Text = "Instalator - Pobieranie Pliku";
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 
-            // Tworzymy przycisk
-            Button button1 = new Button();
-            button1.Size = new System.Drawing.Size(200, 50);
-            button1.Location = new System.Drawing.Point(300, 150);
-            button1.Text = "Kliknij mnie";
-            button1.Click += Button1_Click;
+            // Przycisk Pobierz
+            Button btnDownload = new Button();
+            btnDownload.Size = new System.Drawing.Size(200, 50);
+            btnDownload.Location = new System.Drawing.Point(300, 150);
+            btnDownload.Text = "Pobierz plik";
+            btnDownload.Click += BtnDownload_Click;
 
-            // Dodajemy przycisk do formularza
-            this.Controls.Add(button1);
-        }
+            // Pasek postępu
+            ProgressBar progressBar = new ProgressBar();
+            progressBar.Location = new System.Drawing.Point(200, 250);
+            progressBar.Size = new System.Drawing.Size(400, 30);
+            progressBar.Name = "progressBar";
 
-        private void Button1_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-    }
-}
+            // Etykieta statusu
+            Label lblStatus = new Label();
+            lblStatus.AutoSize = true;
+            lblStatus.Location = new System.Drawing.Point(200, 300);
+            lblStatus.Name = "lblStatus";
+            lblStatus.Text = "Status: Gotowy";
 
-
-### Zawartość pliku: Form1.cs ###
-using System;
-using System.IO;
-using System.Reflection;
-using System.Windows.Forms;
-
-namespace MyWinFormsApp
-{
-    public partial class Form1 : Form
-    {
-        public Form1()
-        {
-            InitializeComponent();
-            SetBackgroundImage();
-        }
-
-        private void SetBackgroundImage()
-        {
-            // Ładowanie obrazu z zasobów
-            var assembly = Assembly.GetExecutingAssembly();
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-            using (Stream stream = assembly.GetManifestResourceStream("MyWinFormsApp.background.jpg"))
-            {
-                if (stream != null)
-                {
-                    this.BackgroundImage = Image.FromStream(stream);
-                    this.BackgroundImageLayout = ImageLayout.Stretch;
-                }
-                else
-                {
-                    MessageBox.Show("Obrazek nie został znaleziony.");
-                }
-            }
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+            // Dodanie komponentów do formularza
+            this.Controls.Add(btnDownload);
+            this.Controls.Add(progressBar);
+            this.Controls.Add(lblStatus);
         }
     }
 }
@@ -99,29 +262,22 @@ namespace MyWinFormsApp
 </Project>
 
 
-
-
 ### Zawartość pliku: Program.cs ###
+using System;
+using System.Windows.Forms;
+
 namespace MyWinFormsApp
 {
     static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
         }
     }
 }
-
-
-### Zawartość pliku: all.txt ###
 
 
 ### Zawartość pliku: MyWinFormsApp.sln ###
