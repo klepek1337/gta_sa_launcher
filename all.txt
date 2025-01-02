@@ -1,3 +1,129 @@
+### Zawartość pliku: Form1.Designer.cs ###
+﻿
+namespace MyWinFormsApp
+{
+    partial class Form1
+    {
+        private System.ComponentModel.IContainer components = null;
+
+        // Clean up any resources being used.
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Text = "Form1";
+
+            // Tworzymy przycisk
+            Button button1 = new Button();
+            button1.Size = new System.Drawing.Size(200, 50);
+            button1.Location = new System.Drawing.Point(300, 150);
+            button1.Text = "Kliknij mnie";
+            button1.Click += Button1_Click;
+
+            // Dodajemy przycisk do formularza
+            this.Controls.Add(button1);
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}
+
+
+### Zawartość pliku: Form1.cs ###
+using System;
+using System.IO;
+using System.Reflection;
+using System.Windows.Forms;
+
+namespace MyWinFormsApp
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+            SetBackgroundImage();
+        }
+
+        private void SetBackgroundImage()
+        {
+            // Ładowanie obrazu z zasobów
+            var assembly = Assembly.GetExecutingAssembly();
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+            using (Stream stream = assembly.GetManifestResourceStream("MyWinFormsApp.background.jpg"))
+            {
+                if (stream != null)
+                {
+                    this.BackgroundImage = Image.FromStream(stream);
+                    this.BackgroundImageLayout = ImageLayout.Stretch;
+                }
+                else
+                {
+                    MessageBox.Show("Obrazek nie został znaleziony.");
+                }
+            }
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+        }
+    }
+}
+
+
+### Zawartość pliku: MyWinFormsApp.csproj ###
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="background.jpg" />
+  </ItemGroup>
+
+</Project>
+
+
+
+
+### Zawartość pliku: Program.cs ###
+namespace MyWinFormsApp
+{
+    static class Program
+    {
+        /// <summary>
+        ///  The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
+        {
+            // To customize application configuration such as set high DPI settings or default font,
+            // see https://aka.ms/applicationconfiguration.
+            ApplicationConfiguration.Initialize();
+            Application.Run(new Form1());
+        }
+    }
+}
+
+
+### Zawartość pliku: all.txt ###
+
+
 ### Zawartość pliku: MyWinFormsApp.sln ###
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
@@ -26,97 +152,6 @@ Global
 EndGlobal
 
 
-### Zawartość pliku: Form1.cs ###
-using System;
-using System.Windows.Forms;
-
-namespace MyWinFormsApp
-{
-    public partial class Form1 : Form
-    {
-        public Form1()
-        {
-            InitializeComponent();
-        }
-
-        private void InitializeComponent()
-        {
-            this.Text = "Moja Aplikacja WinForms"; // Tytuł okna
-            this.ClientSize = new System.Drawing.Size(800, 450); // Rozmiar okna
-
-            // Tworzymy przycisk
-            Button button1 = new Button();
-            button1.Size = new System.Drawing.Size(200, 50);
-            button1.Location = new System.Drawing.Point(300, 150);
-            button1.Text = "Kliknij mnie";
-            button1.Click += Button1_Click;
-
-            // Dodajemy przycisk do formularza
-            this.Controls.Add(button1);
-        }
-
-        private void Button1_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Przycisk został kliknięty!");
-        }
-    }
-}
-
-
-### Zawartość pliku: Form1.Designer.cs ###
-﻿namespace MyWinFormsApp;
-
-partial class Form1
-{
-    /// <summary>
-    ///  Required designer variable.
-    /// </summary>
-    private System.ComponentModel.IContainer components = null;
-
-    /// <summary>
-    ///  Clean up any resources being used.
-    /// </summary>
-    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing && (components != null))
-        {
-            components.Dispose();
-        }
-        base.Dispose(disposing);
-    }
-
-    #region Windows Form Designer generated code
-
-    /// <summary>
-    ///  Required method for Designer support - do not modify
-    ///  the contents of this method with the code editor.
-    /// </summary>
-    private void InitializeComponent()
-    {
-        this.components = new System.ComponentModel.Container();
-        this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(800, 450);
-        this.Text = "Form1";
-    }
-
-    #endregion
-}
-
-
-### Zawartość pliku: MyWinFormsApp.csproj ###
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net9.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-
-</Project>
-
 ### Zawartość pliku: MyWinFormsApp.csproj.user ###
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -128,21 +163,4 @@ partial class Form1
 </Project>
 
 
-### Zawartość pliku: Program.cs ###
-namespace MyWinFormsApp;
-
-static class Program
-{
-    /// <summary>
-    ///  The main entry point for the application.
-    /// </summary>
-    [STAThread]
-    static void Main()
-    {
-        // To customize application configuration such as set high DPI settings or default font,
-        // see https://aka.ms/applicationconfiguration.
-        ApplicationConfiguration.Initialize();
-        Application.Run(new Form1());
-    }    
-}
-
+### Zawartość pliku: background.jpg ###
